@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css"> <!-- Link to your external CSS -->
+    <title>Teacher Dashboard</title>
+    <style>
+        /* Additional adjustments for layout */
+        .main-container {
+            display: flex;
+        }
+
+        .main-content {
+            margin-left: 250px; /* Matches the width of the sidebar */
+            flex-grow: 1; /* Ensures content takes up remaining space */
+        }
+
+        .question-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #f6f8fa; /* Light gray to match your card style */
+        }
+
+        /* Inline styling for black text and inputs */
+        .black-text {
+            color: black !important;
+        }
+        .black-input {
+            color: black;
+            border: 1px solid black;
+        }
+
+        .options-container {
+            margin-top: 10px;
+        }
+        .option-label {
+            display: block;
+            margin-bottom: 5px;
+        }
+       .create-btn {background-color: #14b914; /* Blue button */
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem; /* Rounded corners */
+    transition: background-color 0.3s ease;}
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <a href="teacherdasboard.html">  <h1 class="text-xl font-bold mb-6">Teacher Dashboard</h1></a>
+            <ul>
+                <li class="mb-4">
+                    <a href="ongoingexam.html" class="text-light-blue-500 hover:underline">Ongoing Exam</a>
+                </li>
+                <li class="mb-4">
+                    <a href="createexam.html" class="text-light-blue-500 hover:underline">Create Exam</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#upload-materials" class="text-light-blue-500 hover:underline">Exam Results</a>
+                </li>
+                <li class="mb-4">
+                    <a href="#profile" class="text-light-blue-500 hover:underline">Profile & Settings</a>
+                </li>
+                <li class="mb-4">
+                    <a href="C:\Users\midha\OneDrive\Desktop\final project\index.html">&larr; Home</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content p-6">
+            <!-- Display Exam Details -->
+            <h1 class="text-2xl font-bold mb-4">Exam Details</h1>
+            <div id="exam-details" class="mb-6">
+                <!-- Exam details will be displayed here -->
+            </div>
+
+            <!-- Add Questions Section -->
+            <h2 class="text-xl font-bold mb-4">Add Questions</h2>
+            <div id="questions-container"></div>
+
+            <button id="add-question-btn" class="btn bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">+ Add Question</button>
+        </div>
+    </div>
+    <div class="main-content p-6">
+        <button id="create-exam-btn" class="create-btn" >Create Exam</button>
+
+        <!-- Generated ID and Password -->
+        <div id="generated-credentials" class="generated-credentials hidden">
+            <p><strong>Exam ID:</strong> <span id="exam-id"></span></p>
+            <p><strong>Password:</strong> <span id="exam-password"></span></p>
+        </div>
+    </div>
+</div>
+
+    <script>
+        // Parse query parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const examName = urlParams.get("exam-name");
+        const examDate = urlParams.get("exam-date");
+        const examDuration = urlParams.get("exam-duration");
+        const startTime = urlParams.get("start-time");
+        const endTime = urlParams.get("end-time");
+
+        // Display exam details in the exam-details div
+        const examDetailsDiv = document.getElementById("exam-details");
+        examDetailsDiv.innerHTML = ` 
+            <p class="black-text"><strong>Exam Name:</strong> ${examName}</p>
+            <p class="black-text"><strong>Exam Date:</strong> ${examDate}</p>
+            <p class="black-text"><strong>Exam Duration:</strong> ${examDuration} minutes</p>
+            <p class="black-text"><strong>Start Time:</strong> ${startTime}</p>
+            <p class="black-text"><strong>End Time:</strong> ${endTime}</p>
+        `;
+
+        // Add Questions Section
+        const questionsContainer = document.getElementById("questions-container");
+        const addQuestionBtn = document.getElementById("add-question-btn");
+
+        let questionCount = 1;
+
+        function createQuestionCard() {
+            const questionCard = document.createElement("div");
+            questionCard.classList.add("question-card");
+            questionCard.innerHTML = `
+                <label for="question-${questionCount}" class="black-text">Question ${questionCount}:</label>
+                <textarea id="question-${questionCount}" class="w-full p-2 border rounded mb-2 black-input" placeholder="Enter your question here"></textarea>
+
+                <label for="question-type-${questionCount}" class="black-text">Question Type:</label>
+                <select id="question-type-${questionCount}" class="w-full p-2 border rounded mb-2 black-input">
+                    <option value="mcq">MCQ</option>
+                    <option value="multiple-answer">Multiple Answer</option>
+                    <option value="theory">Theory</option>
+                </select>
+
+                <!-- Options Section -->
+                <div id="options-container-${questionCount}" class="options-container"></div>
+
+                <!-- Expected Answer Section -->
+                <div id="expected-answer-${questionCount}" class="mb-4">
+                    <label for="expected-answer-input-${questionCount}" class="black-text">Expected Answer:</label>
+                    <textarea id="expected-answer-input-${questionCount}" class="w-full p-2 border rounded black-input" placeholder="Enter the expected answer for evaluation"></textarea>
+                </div>
+            `;
+            questionsContainer.appendChild(questionCard);
+            questionCount++;
+
+            // Handle question type change to display options (MCQ or Multiple Answer)
+            const questionTypeSelect = questionCard.querySelector(`#question-type-${questionCount - 1}`);
+            const optionsContainer = questionCard.querySelector(`#options-container-${questionCount - 1}`);
+            const expectedAnswerInput = questionCard.querySelector(`#expected-answer-input-${questionCount - 1}`);
+
+            questionTypeSelect.addEventListener("change", () => {
+                const selectedType = questionTypeSelect.value;
+                optionsContainer.innerHTML = ""; // Clear previous options
+                expectedAnswerInput.value = ""; // Clear the expected answer input
+
+                if (selectedType === "mcq") {
+                    // Add 4 radio buttons for MCQ
+                    for (let i = 1; i <= 4; i++) {
+                        optionsContainer.innerHTML += `
+                            <div>
+                                <label class="option-label black-text">Option ${i}</label>
+                                <input type="radio" name="mcq-${questionCount}" class="black-input" />
+                                <input type="text" placeholder="Enter option ${i}" class="w-full p-2 border rounded black-input mb-2"/>
+                            </div>
+                        `;
+                    }
+                } else if (selectedType === "multiple-answer") {
+                    // Add 5 checkboxes for Multiple Answer
+                    for (let i = 1; i <= 5; i++) {
+                        optionsContainer.innerHTML += `
+                            <div>
+                                <input type="checkbox" id="option-${i}-${questionCount}" class="black-input" />
+                                <label for="option-${i}-${questionCount}" class="black-text">Option ${i}</label>
+                                <input type="text" placeholder="Enter option ${i}" class="w-full p-2 border rounded black-input mb-2"/>
+                            </div>
+                        `;
+                    }
+                } else if (selectedType === "theory") {
+                    // For theory question, create a text area for the expected answer
+                    optionsContainer.innerHTML = `
+                        <div>
+                            <label class="black-text">Answer Field</label>
+                            <textarea id="theory-answer-${questionCount}" class="w-full p-2 border rounded black-input" placeholder="Enter the expected theory answer here"></textarea>
+                        </div>
+                    `;
+                }
+            });
+        }
+
+        // Add initial question card
+        createQuestionCard();
+
+        // Add a new question card when the button is clicked
+        addQuestionBtn.addEventListener("click", createQuestionCard);
+
+        // Handle Exam Creation
+        const createExamBtn = document.getElementById("create-exam-btn");
+
+        createExamBtn.addEventListener("click", function() {
+            // Generate random ID and password
+            const examId = Math.random().toString(36).substr(2, 9);
+            const examPassword = Math.random().toString(36).substr(2, 8);
+
+            // Display generated ID and password
+            const generatedCredentialsDiv = document.getElementById("generated-credentials");
+            document.getElementById("exam-id").innerText = examId;
+            document.getElementById("exam-password").innerText = examPassword;
+            generatedCredentialsDiv.classList.remove("hidden");
+
+            // Redirect to ongoing exam page with exam ID and password
+            setTimeout(() => {
+                window.location.href = `ongoingexam.html?exam-id=${examId}&exam-password=${examPassword}`;
+            }, 2000); // 2 seconds delay before redirect
+        });
+    </script>
+</body>
+</html>

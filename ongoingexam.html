@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css"> 
+    <title>Ongoing Exam Details</title>
+    <style>
+        .exam-container {
+            margin-left: 250px; /* Adjust for sidebar width */
+            padding: 20px;
+        }
+
+        .exam-details {
+            padding: 15px;
+            background-color: #f6f8fa;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .exam-info {
+            margin-bottom: 20px;
+        }
+
+        /* Button for demolishing exam */
+        .demolish-btn {
+            background-color: #e74c3c; /* Red for warning */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .demolish-btn:hover {
+            background-color: #c0392b; /* Darker red on hover */
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="teacherdasboard.html">  <h1 class="text-xl font-bold mb-6">Teacher Dashboard</h1></a>
+          <ul>
+              <li class="mb-4">
+                  <a href="ongoingexam.html" class="text-light-blue-500 hover:underline">Ongoing Exam</a>
+              </li>
+              <li class="mb-4">
+                  <a href="createexam.html" class="text-light-blue-500 hover:underline">Create Exam</a>
+              </li>
+              <li class="mb-4">
+                  <a href="#upload-materials" class="text-light-blue-500 hover:underline">Exam Results</a>
+              </li>
+              <li class="mb-4">
+                  <a href="#profile" class="text-light-blue-500 hover:underline">Profile & Settings</a>
+              </li>
+              <li class="mb-4">
+                  <a href="C:\Users\midha\OneDrive\Desktop\final project\index.html">&larr; Home</a>
+              </li>
+          </ul>
+      </div>
+
+    <div class="exam-container">
+        <h1 class="text-2xl font-bold mb-4">Ongoing Exam Details</h1>
+        
+        <!-- Exam details section -->
+        <div class="exam-details">
+            <h2 class="text-xl font-bold mb-4">Exam Information</h2>
+            <div id="exam-details" class="exam-info">
+                <!-- Exam ID, Password, and other details will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Demolish Exam Button -->
+        <button id="demolish-exam-btn" class="demolish-btn">
+            Demolish Exam
+        </button>
+    </div>
+
+    <script>
+        // Get query parameters from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const examId = urlParams.get("exam-id");
+        const examPassword = urlParams.get("exam-password");
+        const examDuration = urlParams.get("exam-duration"); // Optional: if available in the URL
+
+        // Display Exam Details
+        const examDetailsDiv = document.getElementById("exam-details");
+        examDetailsDiv.innerHTML = `
+            <p><strong>Exam ID:</strong> ${examId}</p>
+            <p><strong>Password:</strong> ${examPassword}</p>
+            <p><strong>Duration:</strong> ${examDuration ? examDuration : "Not specified"}</p>
+            <p><strong>Status:</strong> Ongoing</p>
+            <p><strong>Start Time:</strong> 2024-11-19 10:00 AM</p>
+            <p><strong>End Time:</strong> 2024-11-19 11:00 AM</p>
+        `;
+
+        // Function to demolish the exam
+        function demolishExam() {
+            // Confirm before demolishing
+            const confirmDemolish = confirm("Are you sure you want to demolish this exam? This action cannot be undone.");
+            if (confirmDemolish) {
+                // Logic to demolish exam goes here (e.g., delete exam from the database)
+                // This example only clears the page for demonstration purposes
+                alert("Exam demolished! All related data is removed.");
+
+                // Redirect to teacher dashboard or home after demolishing
+                window.location.href = "teacherdasboard.html";
+            }
+        }
+
+        // Attach event listener to the demolish button
+        const demolishBtn = document.getElementById("demolish-exam-btn");
+        demolishBtn.addEventListener("click", demolishExam);
+    </script>
+</body>
+</html>

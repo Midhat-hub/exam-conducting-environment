@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css"> <!-- Link to your external CSS -->
+    <title>Ongoing Exam</title>
+    <style>
+        /* Additional styling */
+        .exam-container {
+            margin-left: 250px; /* Matches the width of the sidebar */
+            padding: 20px;
+        }
+
+        .exam-details {
+            padding: 15px;
+            background-color: #f6f8fa;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .exam-info {
+            margin-bottom: 20px;
+        }
+
+        .question-section {
+            margin-top: 30px;
+        }
+
+        .question-card {
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            background-color: #f6f8fa;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <a href="teacherdasboard.html">  <h1 class="text-xl font-bold mb-6">Teacher Dashboard</h1></a>
+        <ul>
+            <li class="mb-4">
+                <a href="ongoing_exam.html" class="text-light-blue-500 hover:underline">Ongoing Exam</a>
+            </li>
+            <li class="mb-4">
+                <a href="#view-results" class="text-light-blue-500 hover:underline">Create Exam</a>
+            </li>
+            <li class="mb-4">
+                <a href="#exam-results" class="text-light-blue-500 hover:underline">Exam Results</a>
+            </li>
+            <li class="mb-4">
+                <a href="#profile" class="text-light-blue-500 hover:underline">Profile & Settings</a>
+            </li>
+            <li class="mb-4">
+                <a href="C:\Users\midha\OneDrive\Desktop\final project\index.html">&larr; Home</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="exam-container">
+        <h1 class="text-2xl font-bold mb-4">Ongoing Exam</h1>
+        
+        <!-- Exam details -->
+        <div class="exam-details">
+            <h2 class="text-xl font-bold mb-4">Exam Information</h2>
+            <div id="exam-details" class="exam-info">
+                <!-- Exam ID and Password will be shown here -->
+            </div>
+        </div>
+
+        <!-- Question Section -->
+        <div class="question-section">
+            <h2 class="text-xl font-bold mb-4">Questions</h2>
+            <div id="questions-container">
+                <!-- Questions will be displayed here -->
+            </div>
+        </div>
+
+        <!-- Timer Section -->
+        <div class="timer-section mt-6">
+            <h3 class="text-lg font-bold mb-2">Time Remaining</h3>
+            <div id="countdown-timer" class="text-xl font-bold"></div>
+        </div>
+    </div>
+
+    <script>
+        // Get query parameters from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const examId = urlParams.get("exam-id");
+        const examPassword = urlParams.get("exam-password");
+
+        // Display Exam ID and Password
+        const examDetailsDiv = document.getElementById("exam-details");
+        examDetailsDiv.innerHTML = `
+            <p><strong>Exam ID:</strong> ${examId}</p>
+            <p><strong>Password:</strong> ${examPassword}</p>
+        `;
+
+        // Timer for the ongoing exam
+        let examDuration = 60; // Duration of the exam in minutes (for example, 60 minutes)
+        let timeRemaining = examDuration * 60; // Convert minutes to seconds
+
+        // Function to format time in HH:MM:SS format
+        function formatTime(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const secs = seconds % 60;
+            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        // Function to update the countdown timer every second
+        function updateTimer() {
+            if (timeRemaining <= 0) {
+                document.getElementById("countdown-timer").textContent = "Time's up!";
+                clearInterval(timerInterval);
+                return;
+            }
+
+            timeRemaining--;
+            document.getElementById("countdown-timer").textContent = formatTime(timeRemaining);
+        }
+
+        // Start the countdown timer
+        const timerInterval = setInterval(updateTimer, 1000);
+
+        // Display some sample questions (you can dynamically load these based on your database)
+        const questionsContainer = document.getElementById("questions-container");
+
+        // Sample Questions (replace with actual questions data)
+        const questions = [
+            { question: "What is the capital of France?", type: "MCQ", options: ["Paris", "London", "Berlin", "Madrid"], answer: "Paris" },
+            { question: "Explain the theory of relativity.", type: "Theory", answer: "It is a theory in physics proposed by Albert Einstein that explains how time and space are linked for objects moving at a consistent speed." }
+        ];
+
+        questions.forEach((q, index) => {
+            const questionCard = document.createElement("div");
+            questionCard.classList.add("question-card");
+            let optionsHTML = "";
+            if (q.type === "MCQ") {
+                optionsHTML = q.options.map((option, i) => `
+                    <div>
+                        <input type="radio" name="question-${index}" id="option-${index}-${i}" class="mr-2" />
+                        <label for="option-${index}-${i}">${option}</label>
+                    </div>
+                `).join('');
+            }
+
+            questionCard.innerHTML = `
+                <p class="black-text"><strong>Question ${index + 1}:</strong> ${q.question}</p>
+                <div>${optionsHTML}</div>
+                <p class="black-text"><strong>Answer: </strong>${q.answer}</p>
+            `;
+            questionsContainer.appendChild(questionCard);
+        });
+    </script>
+</body>
+</html>
