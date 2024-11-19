@@ -16,17 +16,26 @@
 </head>
 <body>
     <!-- Sidebar -->
-    <div class="sidebar bg-gray-800 text-white p-4">
-        <h1 class="text-xl font-bold mb-6">Teacher Dashboard</h1>
-        <ul>
-            <li class="mb-4"><a href="#manage-tests" class="hover:underline">Ongoing Exam</a></li>
-            <li class="mb-4"><a href="#view-results" class="hover:underline">Create Exam</a></li>
-            <li class="mb-4"><a href="#upload-materials" class="hover:underline">Exam Results</a></li>
-            <li class="mb-4"><a href="#profile" class="hover:underline">Profile & Settings</a></li>
-            <li class="mb-4"><a href="index.html">&larr; Home</a></li>
-        </ul>
-    </div>
-
+    <div class="sidebar">
+        <a href="teacherdasboard.html">  <h1 class="text-xl font-bold mb-6">Teacher Dashboard</h1></a>
+          <ul>
+              <li class="mb-4">
+                  <a href="ongoingexam.html" class="text-light-blue-500 hover:underline">Ongoing Exam</a>
+              </li>
+              <li class="mb-4">
+                  <a href="createexam.html" class="text-light-blue-500 hover:underline">Create Exam</a>
+              </li>
+              <li class="mb-4">
+                  <a href="#upload-materials" class="text-light-blue-500 hover:underline">Exam Results</a>
+              </li>
+              <li class="mb-4">
+                  <a href="#profile" class="text-light-blue-500 hover:underline">Profile & Settings</a>
+              </li>
+              <li class="mb-4">
+                  <a href="C:\Users\midha\OneDrive\Desktop\final project\index.html">&larr; Home</a>
+              </li>
+          </ul>
+      </div>
     <!-- Main Content -->
     <div class="main-content ml-64 p-8">
         <h1 class="text-3xl font-bold mb-6">Create Exam</h1>
@@ -35,23 +44,23 @@
         <form id="exam-form">
             <div class="mb-4">
                 <label for="exam-name" class="block font-bold">Exam Name:</label>
-                <input type="text" id="exam-name" name="exam-name" class="w-full p-2 border rounded" placeholder="Enter exam name" required>
+                <input type="text" id="exam-name" name="exam-name" class="w-full p-2 border rounded" placeholder="Enter exam name" style="color:black" required>
             </div>
             <div class="mb-4">
                 <label for="exam-date" class="block font-bold">Exam Date:</label>
-                <input type="date" id="exam-date" name="exam-date" class="w-full p-2 border rounded" required>
+                <input type="date" id="exam-date" name="exam-date" class="w-full p-2 border rounded" style="color:black" required>
             </div>
             <div class="mb-4">
                 <label for="exam-duration" class="block font-bold">Exam Duration (minutes):</label>
-                <input type="number" id="exam-duration" name="exam-duration" class="w-full p-2 border rounded" placeholder="Enter exam duration" required>
+                <input type="number" id="exam-duration" name="exam-duration" class="w-full p-2 border rounded" placeholder="Enter exam duration" style="color:black" required>
             </div>
             <div class="mb-4">
                 <label for="start-time" class="block font-bold">Start Time:</label>
-                <input type="time" id="start-time" name="start-time" class="w-full p-2 border rounded" required>
+                <input type="time" id="start-time" name="start-time" class="w-full p-2 border rounded" style="color:black" required>
             </div>
             <div class="mb-4">
                 <label for="end-time" class="block font-bold">End Time:</label>
-                <input type="time" id="end-time" name="end-time" class="w-full p-2 border rounded" required>
+                <input type="time" id="end-time" name="end-time" class="w-full p-2 border rounded" style="color:black" required>
             </div>
             <button type="submit" class="btn bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
                 Next: Add Questions
