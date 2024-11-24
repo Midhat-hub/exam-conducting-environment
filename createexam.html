@@ -81,6 +81,14 @@
             const examDuration = document.getElementById("exam-duration").value;
             const startTime = document.getElementById("start-time").value;
             const endTime = document.getElementById("end-time").value;
+ // Store exam details
+ sessionStorage.setItem("examDetails", JSON.stringify({
+        examName,
+        examDate,
+        examDuration,
+        startTime,
+        endTime
+    }));
 
             // Redirect to createexam2.html with query parameters
             const url = `createexam2.html?exam-name=${encodeURIComponent(examName)}&exam-date=${encodeURIComponent(examDate)}&exam-duration=${encodeURIComponent(examDuration)}&start-time=${encodeURIComponent(startTime)}&end-time=${encodeURIComponent(endTime)}`;

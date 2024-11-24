@@ -67,7 +67,7 @@
                     <a href="#profile" class="text-light-blue-500 hover:underline">Profile & Settings</a>
                 </li>
                 <li class="mb-4">
-                    <a href="C:\Users\midha\OneDrive\Desktop\final project\index.html">&larr; Home</a>
+                    <a href="index.html">&larr; Home</a>
                 </li>
             </ul>
         </div>
@@ -96,7 +96,6 @@
             <p><strong>Password:</strong> <span id="exam-password"></span></p>
         </div>
     </div>
-</div>
 
     <script>
         // Parse query parameters
@@ -117,107 +116,184 @@
             <p class="black-text"><strong>End Time:</strong> ${endTime}</p>
         `;
 
-        // Add Questions Section
-        const questionsContainer = document.getElementById("questions-container");
-        const addQuestionBtn = document.getElementById("add-question-btn");
+       // Add Questions Section
+const questionsContainer = document.getElementById("questions-container");
+const addQuestionBtn = document.getElementById("add-question-btn");
 
-        let questionCount = 1;
+let questionCount = 1;
 
-        function createQuestionCard() {
-            const questionCard = document.createElement("div");
-            questionCard.classList.add("question-card");
-            questionCard.innerHTML = `
-                <label for="question-${questionCount}" class="black-text">Question ${questionCount}:</label>
-                <textarea id="question-${questionCount}" class="w-full p-2 border rounded mb-2 black-input" placeholder="Enter your question here"></textarea>
+function createQuestionCard() {
+    const questionCard = document.createElement("div");
+    questionCard.classList.add("question-card");
+    questionCard.innerHTML = `
+        <label for="question-${questionCount}" class="black-text">Question ${questionCount}:</label>
+        <textarea id="question-${questionCount}" class="w-full p-2 border rounded mb-2 black-input" placeholder="Enter your question here"></textarea>
 
-                <label for="question-type-${questionCount}" class="black-text">Question Type:</label>
-                <select id="question-type-${questionCount}" class="w-full p-2 border rounded mb-2 black-input">
-                    <option value="mcq">MCQ</option>
-                    <option value="multiple-answer">Multiple Answer</option>
-                    <option value="theory">Theory</option>
-                </select>
+        <label for="question-type-${questionCount}" class="black-text">Question Type:</label>
+        <select id="question-type-${questionCount}" class="w-full p-2 border rounded mb-2 black-input">
+            <option value="mcq">MCQ</option>
+            <option value="multiple-answer">Multiple Answer</option>
+            <option value="theory">Theory</option>
+        </select>
 
-                <!-- Options Section -->
-                <div id="options-container-${questionCount}" class="options-container"></div>
+        <!-- Options Section -->
+        <div id="options-container-${questionCount}" class="options-container"></div>
 
-                <!-- Expected Answer Section -->
-                <div id="expected-answer-${questionCount}" class="mb-4">
-                    <label for="expected-answer-input-${questionCount}" class="black-text">Expected Answer:</label>
-                    <textarea id="expected-answer-input-${questionCount}" class="w-full p-2 border rounded black-input" placeholder="Enter the expected answer for evaluation"></textarea>
+        <!-- Expected Answer Section -->
+        <div id="expected-answer-${questionCount}" class="mb-4">
+            <label for="expected-answer-input-${questionCount}" class="black-text">Expected Answer:</label>
+            <textarea id="expected-answer-input-${questionCount}" class="w-full p-2 border rounded black-input" placeholder="Enter the expected answer for evaluation"></textarea>
+        </div>
+    `;
+    questionsContainer.appendChild(questionCard);
+    questionCount++;
+
+    // Handle question type change to display options (MCQ or Multiple Answer)
+    const questionTypeSelect = questionCard.querySelector(`#question-type-${questionCount - 1}`);
+    const optionsContainer = questionCard.querySelector(`#options-container-${questionCount - 1}`);
+    const expectedAnswerInput = questionCard.querySelector(`#expected-answer-input-${questionCount - 1}`);
+
+    questionTypeSelect.addEventListener("change", () => {
+        const selectedType = questionTypeSelect.value;
+        optionsContainer.innerHTML = ""; // Clear previous options
+        expectedAnswerInput.value = ""; // Clear the expected answer input
+
+        if (selectedType === "mcq") {
+            // Add 4 radio buttons for MCQ
+            for (let i = 1; i <= 4; i++) {
+                optionsContainer.innerHTML += `
+                    <div>
+                        <label class="option-label black-text">Option ${i}</label>
+                        <input type="radio" name="mcq-${questionCount}" class="black-input" />
+                        <input type="text" placeholder="Enter option ${i}" class="w-full p-2 border rounded black-input mb-2"/>
+                    </div>
+                `;
+            }
+        } else if (selectedType === "multiple-answer") {
+            // Add 5 checkboxes for Multiple Answer
+            for (let i = 1; i <= 5; i++) {
+                optionsContainer.innerHTML += `
+                    <div>
+                        <input type="checkbox" id="option-${i}-${questionCount}" class="black-input" />
+                        <label for="option-${i}-${questionCount}" class="black-text">Option ${i}</label>
+                        <input type="text" placeholder="Enter option ${i}" class="w-full p-2 border rounded black-input mb-2"/>
+                    </div>
+                `;
+            }
+        } else if (selectedType === "theory") {
+            // For theory question, create a text area for the expected answer
+            optionsContainer.innerHTML = `
+                <div>
+                    <label class="black-text">Write your answer here:</label>
+                    <textarea class="w-full p-2 border rounded mb-2 black-input" placeholder="Theory answer space"></textarea>
                 </div>
             `;
-            questionsContainer.appendChild(questionCard);
-            questionCount++;
+        }
+    });
+}
 
-            // Handle question type change to display options (MCQ or Multiple Answer)
-            const questionTypeSelect = questionCard.querySelector(`#question-type-${questionCount - 1}`);
-            const optionsContainer = questionCard.querySelector(`#options-container-${questionCount - 1}`);
-            const expectedAnswerInput = questionCard.querySelector(`#expected-answer-input-${questionCount - 1}`);
+addQuestionBtn.addEventListener("click", () => {
+    createQuestionCard();
+});
 
-            questionTypeSelect.addEventListener("change", () => {
-                const selectedType = questionTypeSelect.value;
-                optionsContainer.innerHTML = ""; // Clear previous options
-                expectedAnswerInput.value = ""; // Clear the expected answer input
+// Save Exam Details to sessionStorage
+// Save Exam Details to sessionStorage
+// Save Exam Details to sessionStorage
+document.getElementById("create-exam-btn").addEventListener("click", () => {
+    // Fetch exam details from input fields (ensure these IDs match your HTML)
+    const examName = document.getElementById("exam-name") ? document.getElementById("exam-name").value : '';
+    const examDate = document.getElementById("exam-date") ? document.getElementById("exam-date").value : '';
+    const examDuration = document.getElementById("exam-duration") ? document.getElementById("exam-duration").value : '';
+    const startTime = document.getElementById("start-time") ? document.getElementById("start-time").value : '';
+    const endTime = document.getElementById("end-time") ? document.getElementById("end-time").value : '';
 
-                if (selectedType === "mcq") {
-                    // Add 4 radio buttons for MCQ
-                    for (let i = 1; i <= 4; i++) {
-                        optionsContainer.innerHTML += `
-                            <div>
-                                <label class="option-label black-text">Option ${i}</label>
-                                <input type="radio" name="mcq-${questionCount}" class="black-input" />
-                                <input type="text" placeholder="Enter option ${i}" class="w-full p-2 border rounded black-input mb-2"/>
-                            </div>
-                        `;
-                    }
-                } else if (selectedType === "multiple-answer") {
-                    // Add 5 checkboxes for Multiple Answer
-                    for (let i = 1; i <= 5; i++) {
-                        optionsContainer.innerHTML += `
-                            <div>
-                                <input type="checkbox" id="option-${i}-${questionCount}" class="black-input" />
-                                <label for="option-${i}-${questionCount}" class="black-text">Option ${i}</label>
-                                <input type="text" placeholder="Enter option ${i}" class="w-full p-2 border rounded black-input mb-2"/>
-                            </div>
-                        `;
-                    }
-                } else if (selectedType === "theory") {
-                    // For theory question, create a text area for the expected answer
-                    optionsContainer.innerHTML = `
-                        <div>
-                            <label class="black-text">Answer Field</label>
-                            <textarea id="theory-answer-${questionCount}" class="w-full p-2 border rounded black-input" placeholder="Enter the expected theory answer here"></textarea>
-                        </div>
-                    `;
+    function saveExamDetails() {
+    // Fetch input values
+    const examName = document.getElementById('exam-name')?.value || "";
+    const examDate = document.getElementById('exam-date')?.value || "";
+    const startTime = document.getElementById('start-time')?.value || "";
+    const endTime = document.getElementById('end-time')?.value || "";
+    const examDuration = document.getElementById('exam-duration')?.value || "";
+
+    // Debug logs
+    console.log("Exam Name:", examName);
+    console.log("Exam Date:", examDate);
+    console.log("Start Time:", startTime);
+    console.log("End Time:", endTime);
+    console.log("Exam Duration:", examDuration);
+
+    }
+
+// Bind the function to the button
+document.getElementById("create-exam-btn").addEventListener("click", saveExamDetails);
+
+
+// Call saveExamDetails() during exam creation
+document.getElementById("create-exam-btn").addEventListener("click", saveExamDetails);
+
+    const examId = "EXAM" + Math.floor(Math.random() * 10000);
+    const examPassword = Math.random().toString(36).slice(2, 10); // Simple password generation
+    sessionStorage.setItem("examId", examId);
+    sessionStorage.setItem("examPassword", examPassword);
+
+   
+    let questions = [];
+    for (let i = 1; i < questionCount; i++) {
+        const questionText = document.getElementById(`question-${i}`).value;
+        const questionType = document.getElementById(`question-type-${i}`).value;
+        const expectedAnswer = document.getElementById(`expected-answer-input-${i}`).value;
+
+        // Ensure questionText is not empty
+        if (!questionText || !questionType || !expectedAnswer) {
+            alert(`Please fill in all fields for Question ${i}`);
+            return; // Exit the function if any field is missing
+        }
+
+        let options = [];
+        let correctAnswers = []; // To store correct options for the question
+
+        if (questionType === "mcq" || questionType === "multiple-answer") {
+            const optionInputs = document.querySelectorAll(`#options-container-${i} input[type="text"]`);
+            const answerInputs = document.querySelectorAll(`#options-container-${i} input[type="${questionType === 'mcq' ? 'radio' : 'checkbox'}"]`);
+
+            // Ensure that options are added correctly
+            optionInputs.forEach((input, index) => {
+                options.push(input.value); // Store all options
+                // Check if this option is marked as correct
+                const isChecked = answerInputs[index].checked;
+                if (isChecked) {
+                    correctAnswers.push(input.value); // Store correct option(s)
                 }
             });
         }
 
-        // Add initial question card
-        createQuestionCard();
+        // For theory questions, we handle it differently
+        if (questionType === "theory") {
+            options.push(""); // For theory questions, we push an empty string since there are no options
+            correctAnswers.push(expectedAnswer); // Store the expected answer for evaluation
+        }
 
-        // Add a new question card when the button is clicked
-        addQuestionBtn.addEventListener("click", createQuestionCard);
-
-        // Handle Exam Creation
-        const createExamBtn = document.getElementById("create-exam-btn");
-
-        createExamBtn.addEventListener("click", function() {
-            // Generate random ID and password
-            const examId = Math.random().toString(36).substr(2, 9);
-            const examPassword = Math.random().toString(36).substr(2, 8);
-
-            // Display generated ID and password
-            const generatedCredentialsDiv = document.getElementById("generated-credentials");
-            document.getElementById("exam-id").innerText = examId;
-            document.getElementById("exam-password").innerText = examPassword;
-            generatedCredentialsDiv.classList.remove("hidden");
-
-            // Redirect to ongoing exam page with exam ID and password
-            setTimeout(() => {
-                window.location.href = `ongoingexam.html?exam-id=${examId}&exam-password=${examPassword}`;
-            }, 2000); // 2 seconds delay before redirect
+        // Store the complete question data, including the expected answer
+        questions.push({
+            questionText,
+            questionType,
+            options,
+            correctAnswers, // Store correct answers
+            expectedAnswer // Store the expected answer for theory questions
         });
+    }
+
+    // Store questions and other exam details in sessionStorage
+    sessionStorage.setItem("questions", JSON.stringify(questions));
+
+    // Check if the questions are saved correctly
+    console.log("Questions Stored in sessionStorage:", JSON.parse(sessionStorage.getItem("questions")));
+
+    // Redirect to ongoing exam page with exam details
+    window.location.href = "ongoingexam.html?exam-id=" + examId + "&exam-password=" + examPassword;
+});
+
+
     </script>
 </body>
-</html>
+</html> 

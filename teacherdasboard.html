@@ -75,6 +75,21 @@
         </div>-->
     </div>
 </div>
+<script>
+    
+    // Listen for changes in localStorage (storage event is triggered when localStorage is updated)
+    window.addEventListener('storage', (event) => {
+        // Check if the change was for the 'cheatingNotification' key
+        if (event.key === 'cheatingNotification') {
+            const cheatingMessage = event.newValue; // Get the message from localStorage
+            alert(cheatingMessage); // Display an alert to notify teacher
+            // Optionally, you can display the message in a specific div instead of an alert
+            // document.getElementById('cheating-alert').innerText = cheatingMessage;
+        }
+    });
+
+</script>
+
 
 </body>
 </html>
