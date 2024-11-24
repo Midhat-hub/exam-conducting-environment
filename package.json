@@ -1,0 +1,8 @@
+{
+  "devDependencies": {
+    "hardhat": "^2.22.16"
+  },
+  "dependencies": {
+    "web3": "^4.15.0"
+  }
+}

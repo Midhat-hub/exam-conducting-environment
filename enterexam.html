@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+    <title>Create Exam</title>
+    <style>
+        .sidebar {
+            position: fixed;
+            width: 250px;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div >
+        <!-- Sidebar -->
+        <div class="sidebar">
+           <a href="studentdasboard.html"> <h1 class="text-xl font-bold mb-6">Student Dashboard</h1></a>
+            <ul>
+                <li class="mb-4">
+                    <a href="enterexam.html">Enter Exam</a>
+                </li>
+                <li class="mb-4">
+                    <a href="result.html"> Results</a>
+                </li>
+               
+                <li class="mb-4">
+                    <a href="progress.html">Progress</a>
+                </li>
+                
+                <li class="mb-4">
+                    <a href="#settings">Profile Settings</a>
+                </li>
+                <li class="mb-4">
+                    <a href="index.html">&larr;Home</a>
+                </li>
+            </ul>
+        </div>
+
+    <!-- Main Content -->
+    <div class="login-container p-6 ml-64">
+        <h2 class="text-2xl font-bold mb-4">Enter Exam Credentials</h2>
+        <form id="student-login-form" class="space-y-4">
+            <div>
+                <label for="student-name" class="block">Student Name:</label>
+                <input type="text" id="student-name" name="student-name" required placeholder="Enter Your Name" class="w-full p-2 border border-gray-300 rounded-md " style="color: black;">
+            </div>
+            <div>
+                <label for="student-rollno" class="block">Roll Number:</label>
+                <input type="text" id="student-rollno" name="student-rollno" required placeholder="Enter Roll Number" class="w-full p-2 border border-gray-300 rounded-md " style="color: black;">
+            </div>
+            <div>
+                <label for="exam-id" class="block">Exam ID:</label>
+                <input type="text" id="exam-id" name="exam-id" required placeholder="Enter Exam ID" class="w-full p-2 border border-gray-300 rounded-md " style="color: black;">
+            </div>
+            <div>
+                <label for="exam-password" class="block">Exam Password:</label>
+                <input type="password" id="exam-password" name="exam-password" required placeholder="Enter Password" class="w-full p-2 border border-gray-300 rounded-md" style="color: black;">
+            </div>
+            <button type="submit" id="submit-btn" class="w-full bg-blue-500 text-white p-2 rounded-md">Enter Exam</button>
+        </form>
+        <div id="error-message" class="mt-4 text-red-500" style="display: none;">Invalid Exam ID or Password!</div>
+    </div>
+
+    <script>
+        // Event listener for form submission
+        document.getElementById("student-login-form").addEventListener("submit", function (event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Get the entered student details and exam credentials
+            const studentName = document.getElementById("student-name").value;
+            const studentRollNo = document.getElementById("student-rollno").value;
+            const enteredExamId = document.getElementById("exam-id").value;
+            const enteredExamPassword = document.getElementById("exam-password").value;
+
+            // Store the student details in sessionStorage
+            sessionStorage.setItem("studentName", studentName);
+            sessionStorage.setItem("studentRollNo", studentRollNo);
+
+            // Retrieve the stored exam details from sessionStorage
+            const storedExamId = sessionStorage.getItem("examId");
+            const storedExamPassword = sessionStorage.getItem("examPassword");
+
+            // Check if the entered credentials match the stored exam details
+            if (enteredExamId === storedExamId && enteredExamPassword === storedExamPassword) {
+                // Redirect to the final exam page if credentials are correct
+                window.location.href = `finalexam.html?exam-id=${storedExamId}&exam-password=${storedExamPassword}`;
+            } else {
+                // Show an error message if the credentials are incorrect
+                document.getElementById("error-message").style.display = "block";
+            }
+        });
+    </script>
+</body>
+</html>

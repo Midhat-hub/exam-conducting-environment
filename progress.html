@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+    <title>Exam Result</title>
+    <style>
+        /* Sidebar Styling */
+        .sidebar {
+            position: fixed;
+            width: 250px;
+            height: 100%;
+            top: 0;
+            left: 0;
+            padding: 1rem;
+            background-color: #2D3748; /* Tailwind gray-800 */
+            color: white;
+        }
+
+        /* Main content styling (avoiding overlap with sidebar) */
+        .main-content {
+            margin-left: 250px;
+            padding: 2rem;
+        }
+
+        /* Add spacing for smaller screens */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 200px;
+            }
+            .main-content {
+                margin-left: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar bg-gray-800 text-white p-4">
+        <a href="studentdasboard.html">  
+            <h1 class="text-xl font-bold mb-6">Student Dashboard</h1>
+        </a>
+        <ul>
+            <li class="mb-4">
+                <a href="enterexam.html" class="text-light-blue-500 hover:underline">Enter Exam</a>
+            </li>
+            <li class="mb-4">
+                <a href="#upload-materials" class="text-light-blue-500 hover:underline">Exam Results</a>
+            </li>
+            <li class="mb-4">
+                <a href="progress.html">Progress</a>
+            </li>
+            <li class="mb-4">
+                <a href="#profile" class="text-light-blue-500 hover:underline">Profile & Settings</a>
+            </li>
+            <li class="mb-4">
+                <a href="index.html">&larr; Home</a>
+            </li>
+        </ul>
+    </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <h1 class="text-3xl font-bold mb-6">Your Exam progress</h1>
+        <div id="exam-result"></div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get exam results and exam details from sessionStorage
+            const examResults = sessionStorage.getItem("examResults");
+            const examDetails = sessionStorage.getItem("examDetails");
+
+            if (!examResults || !examDetails) {
+                console.error('Exam results or exam details not found in sessionStorage.');
+                alert('No exam results or exam details found.');
+                return;
+            }
+
+            // Parse the exam results and exam details
+            const parsedResults = JSON.parse(examResults);
+            const parsedExamDetails = JSON.parse(examDetails);
+
+            // Check if cheating was detected
+            if (parsedResults.score === 0 && parsedResults.message === "Exam submitted due to cheating.") {
+                // If cheating detected, display failure message
+                const resultContainer = document.getElementById('exam-result');
+                resultContainer.innerHTML = `
+                    <h2 class="text-xl font-bold text-red-600">You have cheated, hence failed the exam.</h2>
+                `;
+            } else {
+                // If no cheating, display exam name, score, percentage, and accuracy
+                const resultContainer = document.getElementById('exam-result');
+            
+                const finalScore = parsedResults.finalScore;
+                const percentage = parsedResults.percentage;
+                const totalQuestions = parsedResults.answers.length;
+                const accuracy = (finalScore / totalQuestions) * 100; // Accuracy based on the number of correct answers
+
+                resultContainer.innerHTML = `
+                    <h2 class="text-xl font-bold">Exam Results for: ${parsedExamDetails.examName}</h2>
+                    <p><strong>Final Score:</strong> ${finalScore}</p>
+                    <p><strong>Percentage:</strong> ${percentage}%</p>
+                    <p><strong>Accuracy:</strong> ${accuracy.toFixed(2)}%</p>
+                `;
+            }
+        });
+    </script>
+</body>
+</html>

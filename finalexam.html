@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+    <title>Final Exam</title>
+    <script src="exam-monitor.js" defer></script>
+    <style>
+        /* Position the timer at the top-left corner */
+        #exam-info {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 18px;
+            font-weight: bold;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+  
+    <!-- Main Content -->
+    <div class="exam-container p-6 ml-64">
+        <h2 class="text-2xl font-bold mb-6">Final Exam</h2>
+        <div id="exam-info"></div>
+        <!-- Exam Questions -->
+        <form id="final-exam-form">
+            <div id="questions-container"></div>
+            <button type="submit" id="submit-btn" class="w-full bg-blue-500 text-white p-2 rounded-md mt-4">Submit Exam</button>
+        </form>
+
+        <!-- Score Display -->
+        <div id="score-container" class="mt-6 hidden">
+            <h3>Your Score: <span id="score"></span>/<span id="total-questions"></span></h3>
+            <p>Percentage: <span id="percentage"></span>%</p>
+        </div>
+    </div>
+
+    <script>
+       // Fetch questions from sessionStorage
+    const questions = JSON.parse(sessionStorage.getItem("questions")) || [];
+    const questionsContainer = document.getElementById("questions-container");
+
+    // Dynamically display questions
+    questions.forEach((question, index) => {
+        const questionElem = document.createElement("div");
+        questionElem.classList.add("mb-4");
+
+        const questionText = document.createElement("p");
+        questionText.innerHTML = `${index + 1}. ${question.questionText}`;
+        questionElem.appendChild(questionText);
+
+        // Handle question type
+        if (question.questionType === "mcq" || question.questionType === "multiple-answer") {
+            question.options.forEach((option) => {
+                const optionLabel = document.createElement("label");
+                optionLabel.classList.add("block");
+                const input = document.createElement("input");
+                input.type = question.questionType === "mcq" ? "radio" : "checkbox";
+                input.name = `question-${index}`;
+                input.value = option;
+                optionLabel.appendChild(input);
+                optionLabel.appendChild(document.createTextNode(option));
+                questionElem.appendChild(optionLabel);
+            });
+        } else {
+            const textInput = document.createElement("textarea");
+            textInput.id = `question-${index}`;
+            textInput.placeholder = "Write your answer here...";
+            textInput.classList.add("w-full", "p-2", "border", "border-gray-300", "rounded-md");
+            questionElem.appendChild(textInput);
+        }
+
+        questionsContainer.appendChild(questionElem);
+    });
+
+    // Handle exam submission
+    document.getElementById("final-exam-form").addEventListener("submit", function (event) {
+        event.preventDefault(); // Prevent form submission
+
+        // Show confirmation dialog
+        const confirmation = confirm("Are you sure you want to submit the exam?");
+        
+        // If the user confirms, proceed with the submission
+        if (confirmation) {
+            let score = 0;
+            const answers = [];
+            const results = []; // Array to store result details
+
+            // Loop through each question to calculate score and store answers
+            questions.forEach((question, index) => {
+                const answer = [];
+                let correctOrWrong = "Wrong"; // Default to wrong
+
+                // Handle multiple-choice and checkbox answers
+                if (question.questionType === "mcq" || question.questionType === "multiple-answer") {
+                    const options = document.getElementsByName(`question-${index}`);
+                    options.forEach((option) => {
+                        if (option.checked) {
+                            answer.push(option.value);
+                        }
+                    });
+
+                    // Check if the answer is correct
+                    if (JSON.stringify(answer) === JSON.stringify(question.correctAnswers)) {
+                        score += 1;
+                        correctOrWrong = "Correct";
+                    }
+                } else {
+                    // Handle text input answers
+                    const textArea = document.querySelector(`#question-${index}`);
+                    if (textArea) {
+                        answer.push(textArea.value);
+                    }
+
+                    if (answer[0] === question.expectedAnswer) {
+                        score += 1;
+                        correctOrWrong = "Correct";
+                    }
+                }
+
+                // Add result details to the results array
+                results.push({
+                    question: question.questionText,
+                    yourInput: answer.join(", "),
+                    correctOrWrong: correctOrWrong,
+                });
+
+                answers.push(answer); // Store the selected answers
+            });
+
+            // Calculate percentage
+            const percentage = (score / questions.length) * 100;
+
+            // Save results to session storage for later access
+            const examResults = {
+                answers: results,
+                finalScore: score,
+                percentage: percentage,
+            };
+            sessionStorage.setItem("examResults", JSON.stringify(examResults));
+
+            // Display results (for debugging purposes)
+            console.log("Results saved to sessionStorage:", examResults);
+
+            // Get the exam ID from the URL or sessionStorage
+            const urlParams = new URLSearchParams(window.location.search);
+            const storedexamId = urlParams.get('exam-id'); // Get 'exam-id' from URL parameters
+
+            
+
+            // Redirect to student dashboard after successful submission
+            window.location.href = "okcretesmart.html"; // Redirects to the student dashboard
+        } else {
+            // If the user cancels, show a message or do nothing
+            console.log("Exam submission canceled.");
+        }
+    });
+
+
+
+
+
+    </script>
+</body>
+</html>

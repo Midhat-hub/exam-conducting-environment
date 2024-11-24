@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exam Finished</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Exam Finished</h1>
+    <p>Your exam is complete. Click "OK" to save the results.</p>
+    <a href="studentdasboard.html"><button id="okButton">OK</button></a>
+
+    <script>
+        // Function to simulate generating a fake transaction ID
+        function generateTransactionID() {
+            const timestamp = Date.now().toString(16);  // Get current timestamp in hex format
+            const randomHash = Math.random().toString(36).substring(2, 10);  // Random alphanumeric string
+            return `0x${timestamp}${randomHash}`;  // Concatenate the timestamp and random hash for a unique ID
+        }
+
+        // When the "OK" button is clicked
+        document.getElementById('okButton').addEventListener('click', function () {
+            // Collect data from sessionStorage
+            const examDetails = JSON.parse(sessionStorage.getItem('examDetails'));
+            const examId = sessionStorage.getItem('examId');
+            const examPassword = sessionStorage.getItem('examPassword');
+            const examResults = JSON.parse(sessionStorage.getItem('examResults'));
+            const examStartTimestamp = sessionStorage.getItem('examStartTimestamp');
+            const studentName = sessionStorage.getItem('studentName');
+            const studentRollNo = sessionStorage.getItem('studentRollNo');
+
+            // Check if the required data exists in sessionStorage
+            if (examDetails && examId && examPassword && examResults && examStartTimestamp && studentName && studentRollNo) {
+                // Add the examEndTimestamp (current time) when the exam is finished
+                const examEndTimestamp = Date.now();
+
+                // Generate a fake transaction ID
+                const transactionID = generateTransactionID();
+
+                // Combine all data into a single object
+                const fullExamData = {
+                    examDetails,
+                    examId,
+                    examPassword,
+                    examResults,
+                    examStartTimestamp,
+                    examEndTimestamp,
+                    studentName,
+                    studentRollNo,
+                    transactionID
+                };
+
+                // Store the combined data in localStorage
+                localStorage.setItem('examContractData', JSON.stringify(fullExamData));
+
+                // Show a message to the user
+                alert(`Exam data has been saved successfully! Transaction ID: ${transactionID}`);
+
+                // Optionally, reload or redirect to another page
+                window.location.reload();  // Reload to simulate a clean state for the next session
+            } else {
+                alert("Some exam data is missing in session storage. Please check your session.");
+            }
+        });
+
+        // Simulating session storage data for testing (You can remove this block in production)
+        
+    </script>
+</body>
+</html>
